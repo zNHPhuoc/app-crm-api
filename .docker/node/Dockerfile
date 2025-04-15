@@ -1,4 +1,14 @@
-FROM ubuntu:latest
-LABEL authors="phuoc"
+FROM node:20-alpine
 
-ENTRYPOINT ["top", "-b"]
+RUN apk add --no-cache bash && corepack enable
+
+WORKDIR /app
+
+COPY package*.json ./
+COPY yarn.lock ./
+RUN yarn install
+
+COPY . .
+
+EXPOSE 3000
+CMD ["yarn", "start:dev"]
