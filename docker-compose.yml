@@ -7,7 +7,7 @@ services:
       dockerfile: .docker/node/Dockerfile
     container_name: nest_app
     ports:
-      - "${PORT}:3000"
+      - "${APP_PORT}:3000"
     environment:
       - NODE_ENV=${NODE_ENV}
       - MONGO_URI=${MONGO_URI}
