@@ -65,6 +65,21 @@ services:
     networks:
       - app-network
 
+  queue:
+    build:
+      context: .
+      dockerfile: .docker/queue/Dockerfile
+    container_name: nest_queue
+    depends_on:
+      - redis
+    environment:
+      - REDIS_HOST=${REDIS_HOST}
+    networks:
+      - app-network
+    volumes:
+      - ./:/app
+    working_dir: /app
+
 networks:
   app-network:
 
