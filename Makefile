@@ -17,3 +17,7 @@ sh:
 
 logs:
 	docker compose logs -f
+
+# exec app
+app:
+	docker exec -it nest_app bash
