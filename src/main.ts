@@ -6,6 +6,9 @@ import { config } from 'dotenv';
 import { join } from 'path';
 import { setupSwagger } from './configs/swagger.config';
 import { EventEmitter } from 'events';
+import { corsConfig } from './configs/cors.config';
+import { useContainer } from 'class-validator';
+import { AllExceptionFilter } from './filters/all-exception.filter';
 config();
 
 EventEmitter.defaultMaxListeners = 1000;
@@ -18,29 +21,23 @@ async function bootstrap() {
       bufferLogs: true,
     });
 
+  useContainer(app.select(AppModule), { fallbackOnErrors: true });
+
   // set public path
   const publicPath = join(__dirname, '../../public/');
   app.useStaticAssets(publicPath, {
     prefix: '/public/',
   });
 
-  // set cors
-  app.enableCors({
-    origin: '*',
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-    preflightContinue: false,
-    optionsSuccessStatus: 204,
-    credentials: true,
-  });
+  corsConfig(app); // cors
 
-  // set global prefix
-  app.setGlobalPrefix(APP_PREFIX);
+  app.setGlobalPrefix(APP_PREFIX); // set global prefix
 
-  // set global validation pipe
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(new ValidationPipe({ transform: true })); // set global validation pipe
 
-  // swagger
-  setupSwagger(app);
+  app.useGlobalFilters(new AllExceptionFilter()); // set global interceptor
+
+  setupSwagger(app); // swagger
 
   await app.listen(APP_PORT, async () => {
     Logger.log(`API Swagger: ${APP_HOST}${APP_PREFIX}/`);

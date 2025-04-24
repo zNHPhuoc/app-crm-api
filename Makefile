@@ -18,6 +18,20 @@ sh:
 logs:
 	docker compose logs -f
 
+restart:
+	@make down
+	@make up
+
 # exec app
 app:
 	docker exec -it nest_app bash
+
+yarn-dev:
+	docker exec -it nest_app yarn start:dev
+
+# exec mongo
+mongo:
+	docker exec -it nest_mongo bash
+
+mongo-shell:
+	docker exec -it nest_mongo mongosh -u root -p secret123 --authenticationDatabase admin

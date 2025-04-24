@@ -16,7 +16,7 @@ services:
     volumes:
       - ./:/app
     working_dir: /app
-    command: yarn start:dev
+    command: tail -f /dev/null
     depends_on:
       - mongo
       - redis
@@ -32,11 +32,11 @@ services:
       - "27017:27017"
     volumes:
       - mongo_data:/data/db
-    networks:
-      - app-network
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: secret123
+    networks:
+      - app-network
 
   redis:
     image: redis:latest
